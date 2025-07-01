@@ -25,9 +25,9 @@ const productApi = require('./routes/api/productApi');
 const paymentRoutes = require('./routes/payment');
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/shopping-app')
+mongoose.connect(process.env.DB_URL)
 .then(() => {
-  console.log('Database connected successfully');
+  console.log('MongoDB Atlas connected successfully');
 })
 .catch((err) => {
   console.log('Database connection failed'); 
@@ -46,7 +46,7 @@ app.use(methodOverride('_method'));
 
 // configuring the session
 const configSession = {
-  secret: "any thing",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -97,6 +97,7 @@ app.use(paymentRoutes);
 
 
 
-app.listen(8080, () => {
-  console.log('Server successfully connected at port 8080');
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
