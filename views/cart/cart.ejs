@@ -1,0 +1,259 @@
+<% layout('layouts/boilerplate') -%>
+
+<style>
+  .cart-container {
+    padding: 2rem 0;
+  }
+  
+  .cart-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .cart-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+  }
+  
+  .cart-items {
+    margin-bottom: 2rem;
+  }
+  
+  .cart-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .cart-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cart-item-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    padding: 0.5rem;
+    background: #f8f9fa;
+  }
+  
+  .cart-item-details {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .cart-item-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+  }
+  
+  .cart-item-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2ecc71;
+    margin-bottom: 1rem;
+  }
+  
+  .remove-btn {
+    align-self: flex-start;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  
+  .remove-btn:hover {
+    background: #ff6b6b;
+    color: #fff;
+  }
+  
+  .cart-summary {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    position: sticky;
+    top: 1rem;
+  }
+  
+  .summary-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: #2c3e50;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed #e9ecef;
+  }
+  
+  .summary-item:last-child {
+    border-bottom: none;
+  }
+  
+  .summary-total {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #2c3e50;
+    margin: 1.25rem 0;
+  }
+  
+  .checkout-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #2ecc71;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  
+  .checkout-btn:hover {
+    background: #27ae60;
+    transform: translateY(-1px);
+  }
+  
+  .empty-cart {
+    text-align: center;
+    padding: 3rem 0;
+  }
+  
+  .empty-cart-icon {
+    font-size: 4rem;
+    color: #bdc3c7;
+    margin-bottom: 1.5rem;
+  }
+  
+  .empty-cart-text {
+    font-size: 1.25rem;
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+  }
+  
+  .continue-shopping {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    background: #3498db;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .continue-shopping:hover {
+    background: #2980b9;
+    color: white;
+    transform: translateY(-1px);
+  }
+  
+  @media (max-width: 991.98px) {
+    .cart-summary {
+      margin-top: 2rem;
+    }
+  }
+  
+  @media (max-width: 767.98px) {
+    .cart-item {
+      flex-direction: column;
+    }
+    
+    .cart-item-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+  }
+</style>
+
+<section class="cart-container">
+  <div class="container">
+    <div class="cart-header">
+      <h1 class="cart-title"> MY CART </h1>
+    </div>
+    
+    <%- include('../partials/flash') %>
+    
+    <div class="row">
+      <!-- Cart Items -->
+      <div class="col-lg-8">
+        <% if (foundUser.cart && foundUser.cart.length > 0) { %>
+          <div class="cart-items">
+            <% foundUser.cart.forEach(item => { %>
+              <div class="cart-item d-flex">
+                <img src="<%= item.img %>" 
+                     alt="<%= item.name %>" 
+                     class="cart-item-img">
+                <div class="cart-item-details flex-grow-1">
+                  <div>
+                    <h3 class="cart-item-name"><%= item.name %></h3>
+                    <div class="cart-item-price">Rs. <%= item.price %></div>
+                  </div>
+                  <form action="/user/<%= item._id %>/remove?_method=DELETE" method="POST" class="mb-0">
+                    <button type="submit" class="remove-btn">
+                      Remove
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="empty-cart">
+            <div class="empty-cart-icon">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3 class="empty-cart-text">Your cart is empty</h3>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- Order Summary -->
+      <% if (foundUser.cart && foundUser.cart.length > 0) { %>
+        <div class="col-lg-4">
+          <div class="cart-summary">
+            <h3 class="summary-title">Order Summary</h3>
+            
+            <% foundUser.cart.forEach(item => { %>
+              <div class="summary-item">
+                <span><%= item.name %></span>
+                <span>Rs. <%= item.price %></span>
+              </div>
+            <% }) %>
+            
+            <div class="summary-total d-flex justify-content-between">
+              <span>Total</span>
+              <span>Rs. <%= totalAmount %></span>
+            </div>
+            
+            <form action="/payment/checkout" method="POST">
+              <input type="hidden" name="amount" value="<%= totalAmount %>"/>              
+              <button type="submit" class="checkout-btn"> Checkout </button>
+            </form>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>

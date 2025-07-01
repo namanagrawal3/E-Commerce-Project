@@ -1,0 +1,279 @@
+<% layout('layouts/boilerplate') -%>
+
+<style>
+  .product-section {
+    margin: 2rem 0;
+    padding: 2rem 0;
+  }
+  
+  .product-image-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+  }
+  
+  .product-image {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  
+  .product-info {
+    background: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    height: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .product-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #212529;
+  }
+  
+  .product-price {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #2a9d8f;
+    margin: 1.5rem 0;
+  }
+  
+  .product-description {
+    color: #495057;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+  
+  .action-buttons .btn {
+    margin-right: 0.75rem;
+    margin-bottom: 0.75rem;
+    min-width: 120px;
+    transition: all 0.3s ease;
+  }
+  
+  .reviews-section {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .review-card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .review-rating {
+    margin-right: 1rem;
+  }
+  
+  .review-date {
+    color: #6c757d;
+    font-size: 0.875rem;
+  }
+  
+  .review-comment {
+    color: #343a40;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+  
+  .starability-basic {
+    margin: 1rem 0;
+  }
+  
+  @media (max-width: 991.98px) {
+    .product-info {
+      margin-top: 2rem;
+    }
+    
+    .action-buttons .btn {
+      width: 100%;
+      margin-right: 0;
+    }
+  }
+</style>
+
+<section class="product-section">
+  <div class="container">
+    <%- include('../partials/flash') %>
+    
+    <div class="row g-4">
+      <!-- Product Image -->
+      <div class="col-lg-6">
+        <div class="product-image-container">
+          <img src="<%= foundProduct.img || 'https://via.placeholder.com/500' %>" 
+               alt="<%= foundProduct.name %>" 
+               class="product-image">
+        </div>
+      </div>
+      
+      <!-- Product Info -->
+      <div class="col-lg-6">
+        <div class="product-info">
+          <h1 class="product-title"><%= foundProduct.name %></h1>
+          
+          <div class="mb-3">
+            <span class="text-muted"><%= foundProduct.reviews.length %> reviews</span>
+          </div>
+          
+          <div class="product-price">
+            Rs. <%= foundProduct.price.toFixed(2) %>
+            <% if (foundProduct.price > 0) { %>
+              <small class="text-muted text-decoration-line-through ms-2">Rs. <%= (foundProduct.price * 2).toFixed(2) %></small>
+              <span class="badge bg-warning text-dark ms-2">50% OFF</span>
+            <% } %>
+          </div>
+          
+          <p class="product-description"><%= foundProduct.desc %></p>
+          
+          <div class="action-buttons">
+            <form action="/user/<%= foundProduct._id %>/add" method="POST" class="d-inline-block">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+              </button>
+            </form>
+            
+            <form action="/user/<%= foundProduct._id %>/buy" method="POST" class="d-inline-block">
+              <button type="submit" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-bolt me-2"></i> Buy Now
+              </button>
+            </form>
+            
+            <% if (currentUser && currentUser.role === 'seller') { %>
+              <a href="/products/<%= foundProduct._id %>/edit" class="btn btn-outline-secondary">
+                <i class="fas fa-edit me-1"></i> Edit
+              </a>
+              <form class="d-inline-block" action="/products/<%= foundProduct._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                <button type="submit" class="btn btn-outline-danger">
+                  <i class="fas fa-trash-alt me-1"></i> Delete
+                </button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h3 class="mb-4">
+            <i class="fas fa-comments me-2"></i>
+            Customer Reviews
+            <small class="text-muted">(<%= foundProduct.reviews.length %>)</small>
+          </h3>
+          
+          <!-- Review Form -->
+          <% if (currentUser) { %>
+            <div class="card mb-5 border-0 shadow-sm">
+              <div class="card-body p-4">
+                <h5 class="mb-3">Write a Review</h5>
+                <form action="/products/<%= foundProduct._id %>/review" method="POST">
+                  <div class="mb-3">
+                    <label class="form-label">Your Rating</label>
+                    <div class="starability-basic">
+                      <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+                      <input type="radio" id="first-rate1" name="rating" value="1" required />
+                      <label for="first-rate1" title="Terrible">1 star</label>
+                      <input type="radio" id="first-rate2" name="rating" value="2" />
+                      <label for="first-rate2" title="Not good">2 stars</label>
+                      <input type="radio" id="first-rate3" name="rating" value="3" />
+                      <label for="first-rate3" title="Average">3 stars</label>
+                      <input type="radio" id="first-rate4" name="rating" value="4" />
+                      <label for="first-rate4" title="Very good">4 stars</label>
+                      <input type="radio" id="first-rate5" name="rating" value="5" />
+                      <label for="first-rate5" title="Amazing">5 stars</label>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="comment" class="form-label">Your Review</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="3" required 
+                              placeholder="Share your thoughts about this product..."></textarea>
+                  </div>
+                  
+                  <button type="submit" class="btn btn-primary px-4">
+                    <i class="far fa-paper-plane me-2"></i>Submit Review
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% } else { %>
+            <div class="alert alert-info">
+              <a href="/login" class="alert-link">Sign in</a> to leave a review.
+            </div>
+          <% } %>
+          
+          <!-- Reviews List -->
+          <div class="reviews-list">
+            <% if (foundProduct.reviews.length > 0) { %>
+              <% foundProduct.reviews.forEach(review => { %>
+                <div class="card review-card mb-3">
+                  <div class="card-body">
+                    <div class="review-header">
+                      <div class="review-rating">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                          <i class="fas fa-star<%= i <= review.rating ? ' text-warning' : '-o' %>"></i>
+                        <% } %>
+                      </div>
+                      <div class="review-date text-muted small">
+                        <% if (review.createdAt) { %>
+                          <%= new Date(review.createdAt).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                          }) %>
+                        <% } %>
+                      </div>
+                    </div>
+                    <p class="review-comment mb-0"><%= review.comment %></p>
+                  </div>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <div class="text-center py-4">
+                <i class="far fa-comment-dots fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No reviews yet. Be the first to review!</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Initialize tooltips
+  document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+</script>

@@ -1,0 +1,160 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+  
+  .navbar {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%) !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 0;
+    transition: all 0.3s ease;
+  }
+  
+  .navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem !important;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+  }
+  
+  .navbar-brand i {
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-link {
+    font-weight: 400;
+    padding: 0.5rem 1.2rem !important;
+    margin: 0 0.2rem;
+    border-radius: 6px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-link:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .nav-link.active {
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+  }
+  
+  .navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  }
+  
+  .cart-icon-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    font-size: 0.6rem;
+    padding: 0.3em 0.6em;
+    min-width: 18px;
+    text-align: center;
+  }
+  
+  @media (max-width: 991.98px) {
+    .navbar-collapse {
+      background: rgba(2, 62, 138, 0.98);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+    
+    .nav-link {
+      padding: 0.8rem 1rem !important;
+      margin: 0.2rem 0;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentLocation = window.location.pathname;
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    
+    navLinks.forEach(link => {
+      // Special case for home page
+      if (link.getAttribute('href') === '/' && currentLocation === '/') {
+        link.classList.add('active');
+        return;
+      }
+      
+      // For other pages
+      if (link.getAttribute('href') !== '/' && 
+          currentLocation.startsWith(link.getAttribute('href'))) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="/products">
+  <i class="fas fa-shopping-basket me-2"></i>Shopping Cart
+</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/">
+  <i class="fas fa-home me-1"></i> Home
+</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/products">
+  <i class="fas fa-box me-1"></i> Products
+</a>
+        </li>
+
+        <% if (currentUser && currentUser.role === 'seller') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/products/new">
+  <i class="fas fa-plus-circle me-1"></i> Add Product
+</a>
+          </li>
+        <% } %>
+      </ul>
+
+      <div class="d-flex">
+
+        <% if (!currentUser) { %>
+          <a href="/login" class="nav-link">
+  <i class="fas fa-sign-in-alt me-1"></i> Login
+</a>
+        <% } else { %>
+          <a href="#" class="nav-link text-capitalize">
+  <i class="fas fa-user-circle me-1"></i> <%= currentUser.username %>
+</a>
+          <a href="/user/cart" class="nav-link">
+            <span class="cart-icon-container">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="badge rounded-pill bg-danger">
+                <%= currentUser.cart.length %>
+              </span>
+            </span>
+          </a>
+          <a href="/logout" class="nav-link">
+  <i class="fas fa-sign-out-alt me-1"></i> Logout
+</a>
+        <% } %>  
+
+      </div>
+    </div>
+  </div>
+</nav>

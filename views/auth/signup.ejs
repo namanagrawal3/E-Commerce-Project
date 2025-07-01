@@ -1,0 +1,43 @@
+
+<% layout('layouts/boilerplate') %>
+
+    
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <%- include('../partials/flash') %>
+        <h1 class="display-6"> Sign Up </h1>
+
+        <form action="/register" method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label"> Username: </label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter the username" required>  
+            </div>
+
+            <div class="mb-3">
+                <p class="mb-2"> Want to register as ? </p>
+                <div class="mx-2">
+                    <label for="buyer" class="form-label"> Buyer: </label>
+                    <input type="radio" class="form-check-input mt-0" id="buyer" name="role" value="buyer" aria-label="Radio button for following text input" required>
+                </div>
+                <div class="mx-2">
+                    <label for="seller" class="form-label"> Seller: </label>
+                    <input type="radio" class="form-check-input mt-0" id="seller" name="role" value="seller" aria-label="Radio button for following text input" required>
+                </div>  
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label"> Email: </label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter the email" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label"> Password: </label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter the password" required>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-sm"> Sign Up </button>
+            <p class="fw-light mt-2"> Already have an account, <a href="/login">Login</a> </p>
+        </form>
+    </div>    
+
+</div>
