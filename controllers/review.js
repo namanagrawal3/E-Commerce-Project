@@ -8,7 +8,7 @@ const addNewProductReview = async (req, res) => {
         const { rating, comment } = req.body;
 
         const foundProduct = await Product.findById(productID);
-        const newReview = new Review({rating, comment});  // create a new review instance   
+        const newReview = new Review({rating, comment, author: req.user._id});  // create a new review instance   
         await newReview.save();                           // save the review in the DB 
 
         // Average-Rating Logic
@@ -25,5 +25,22 @@ const addNewProductReview = async (req, res) => {
     } 
 };
 
+const deleteProductReview = async (req, res) => {
+    const { productID, reviewID } = req.params;
+    const foundReview = await Review.findById(reviewID);
 
-module.exports = { addNewProductReview };
+    // only author can delete
+    if (!foundReview.author.equals(req.user._id)) {
+        req.flash('error', "You don't have permission to delete this review");
+        return res.redirect(`/products/${productID}`);
+    }
+
+    await Review.findByIdAndDelete(reviewID);
+    await Product.findByIdAndUpdate(productID, { $pull: { reviews: reviewID } });
+
+    req.flash('success', 'Review deleted successfully!!');
+    res.redirect(`/products/${productID}`);
+};
+
+
+module.exports = { addNewProductReview, deleteProductReview };

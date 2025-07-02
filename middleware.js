@@ -25,6 +25,10 @@ const validateReview = (req, res, next) => {
 
 const isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
+        // req.xhr is automatically true when you send header in the axios-request
+        if (req.xhr) 
+            return res.status(401).json({ message: "Login Required" });
+        
         req.flash('error', 'Please login first!!');
         return res.redirect('/login');
     }

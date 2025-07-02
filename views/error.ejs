@@ -1,10 +1,76 @@
-
 <% layout('layouts/boilerplate') -%>
 
-<div class="alert alert-danger text-center" role="alert">
-    <h4 class="alert-heading">Error!</h4>
-    <p><%= error %></p>
-    <hr>
-    <p class="mb-0">Please try again later or contact support.</p>
-
+<!-- Error Page with Enhanced UI/UX -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-danger text-white py-4">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                        <h2 class="h4 mb-0">Oops! Something Went Wrong</h2>
+                    </div>
+                </div>
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-bug fa-4x text-danger mb-3"></i>
+                        <h3 class="h5 text-muted mb-4">We encountered an error</h3>
+                        
+                        <!-- Error Message -->
+                        <div class="alert alert-light border-danger mb-4">
+                            <p class="mb-0 text-danger fw-bold"><%= error %></p>
+                        </div>
+                        
+                        <p class="text-muted mb-4">
+                            We're sorry for the inconvenience. Our team has been notified and we're working to fix the issue.
+                        </p>
+                    </div>
+                    
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a href="/" class="btn btn-primary px-4">
+                            <i class="fas fa-home me-2"></i>Return Home
+                        </a>
+                        <a href="mailto:support@example.com" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-envelope me-2"></i>Contact Support
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="small text-muted mb-0">
+                        <i class="fas fa-info-circle me-1"></i> Error occurred on: <%= new Date().toLocaleString() %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Custom Styles -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .card {
+        border: none;
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .card-header {
+        border-bottom: none;
+    }
+    .btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+    }
+    .alert-light {
+        background-color: rgba(220, 53, 69, 0.05);
+        border-left: 4px solid #dc3545;
+    }
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+    }
+</style>

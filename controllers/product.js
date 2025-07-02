@@ -34,8 +34,10 @@ const addNewProduct = async (req, res) => {
 
 const showParticularProduct = async (req, res) => {
     try {
-        const { ID } = req.params; 
-        const foundProduct = await Product.findById(ID).populate('reviews'); 
+        const { ID } = req.params;
+        // nested-populate  
+        const foundProduct = await Product.findById(ID).populate({path: 'reviews', populate: { path: 'author' }});
+        
         // res.render('products/show', { foundProduct, success: req.flash('success') }); // sending flash-message without "locals"
         res.render('products/show', { foundProduct }); 
     }

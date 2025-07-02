@@ -86,6 +86,10 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
+app.get('/about', (req, res) => {
+  res.render('about');
+});
+
 
 // Routes
 app.use(productRoutes);     // middleware is used so that all incoming requests to the server will be checked whether they are productRoutes

@@ -125,9 +125,7 @@
       <!-- Product Image -->
       <div class="col-lg-6">
         <div class="product-image-container">
-          <img src="<%= foundProduct.img || 'https://via.placeholder.com/500' %>" 
-               alt="<%= foundProduct.name %>" 
-               class="product-image">
+          <img src="<%= foundProduct.img %>" alt="<%= foundProduct.name %>" class="product-image">
         </div>
       </div>
       
@@ -144,7 +142,7 @@
             Rs. <%= foundProduct.price.toFixed(2) %>
             <% if (foundProduct.price > 0) { %>
               <small class="text-muted text-decoration-line-through ms-2">Rs. <%= (foundProduct.price * 2).toFixed(2) %></small>
-              <span class="badge bg-warning text-dark ms-2">50% OFF</span>
+              <span style="background-color: #ffc107 !important; color: #000 !important; padding: 3px 8px !important; border-radius: 50px !important; font-weight: 500;"> 50% OFF </span>
             <% } %>
           </div>
           
@@ -193,6 +191,7 @@
             <div class="card mb-5 border-0 shadow-sm">
               <div class="card-body p-4">
                 <h5 class="mb-3">Write a Review</h5>
+
                 <form action="/products/<%= foundProduct._id %>/review" method="POST">
                   <div class="mb-3">
                     <label class="form-label">Your Rating</label>
@@ -213,19 +212,19 @@
                   
                   <div class="mb-3">
                     <label for="comment" class="form-label">Your Review</label>
-                    <textarea class="form-control" id="comment" name="comment" rows="3" required 
-                              placeholder="Share your thoughts about this product..."></textarea>
+                    <textarea class="form-control" id="comment" name="comment" rows="3" required placeholder="Share your thoughts about this product..."></textarea>
                   </div>
                   
                   <button type="submit" class="btn btn-primary px-4">
                     <i class="far fa-paper-plane me-2"></i>Submit Review
                   </button>
                 </form>
+
               </div>
             </div>
           <% } else { %>
             <div class="alert alert-info">
-              <a href="/login" class="alert-link">Sign in</a> to leave a review.
+              <a href="/login" class="alert-link"> Sign in </a> to leave a review.
             </div>
           <% } %>
           
@@ -233,47 +232,99 @@
           <div class="reviews-list">
             <% if (foundProduct.reviews.length > 0) { %>
               <% foundProduct.reviews.forEach(review => { %>
-                <div class="card review-card mb-3">
-                  <div class="card-body">
-                    <div class="review-header">
-                      <div class="review-rating">
-                        <% for (let i = 1; i <= 5; i++) { %>
-                          <i class="fas fa-star<%= i <= review.rating ? ' text-warning' : '-o' %>"></i>
-                        <% } %>
+                <div class="card review-card mb-4 border-0 shadow-sm">
+                  <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                          <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-0 fw-bold">
+                            <% if (review.author && review.author.username) { %>
+                              <%= review.author.username %>
+                            <% } else { %>
+                              Anonymous User
+                            <% } %>
+                          </h6>
+                          <div class="review-rating my-1">
+                            <% for (let i = 1; i <= 5; i++) { %>
+                              <i class="<%= i <= review.rating ? 'fas' : 'far' %> fa-star text-warning"></i>
+                            <% } %>
+                          </div>
+                          <div class="text-muted small">
+                            <% if (review.createdAt) { %>
+                              <i class="far fa-clock me-1"></i>
+                              <%= new Date(review.createdAt).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              }) %>
+                            <% } %>
+                          </div>
+                        </div>
                       </div>
-                      <div class="review-date text-muted small">
-                        <% if (review.createdAt) { %>
-                          <%= new Date(review.createdAt).toLocaleDateString('en-US', { 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                          }) %>
-                        <% } %>
-                      </div>
+                      
+                      <form action="/products/<%= foundProduct._id %>/review/<%= review._id %>?_method=DELETE" method="POST" 
+                            onsubmit="return confirm('Are you sure you want to delete your review?')" class="position-relative" style="top: -8px; right: -8px;">
+                        <button type="submit" class="btn btn-sm btn-link text-danger p-1" title="Delete review">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                      </form>
                     </div>
-                    <p class="review-comment mb-0"><%= review.comment %></p>
+                    
+                    <div class="ms-2 ps-3 border-start border-2 border-light">
+                      <p class="review-comment mb-0 text-muted">
+                        <i class="fas fa-quote-left text-primary opacity-25 me-2"></i>
+                        <%= review.comment %>
+                      </p>
+                    </div>
                   </div>
                 </div>
               <% }) %>
             <% } else { %>
-              <div class="text-center py-4">
-                <i class="far fa-comment-dots fa-3x text-muted mb-3"></i>
-                <p class="text-muted">No reviews yet. Be the first to review!</p>
+              <div class="text-center p-5 bg-light rounded-3">
+                <i class="far fa-comment-dots fa-4x text-muted mb-3 opacity-25"></i>
+                <h5 class="text-muted mb-2">No Reviews Yet</h5>
+                <p class="text-muted mb-0">Be the first to share your thoughts!</p>
               </div>
             <% } %>
           </div>
+          
+          <style>
+            .review-card {
+              transition: transform 0.2s ease, box-shadow 0.2s ease;
+              border-radius: 12px;
+              overflow: hidden;
+              background: #fff;
+            }
+            .review-card:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05) !important;
+            }
+            .review-comment {
+              line-height: 1.7;
+              color: #4a4a4a;
+            }
+            .avatar {
+              background-color: #f0f7ff;
+              color: #0d6efd;
+            }
+            @media (max-width: 576px) {
+              .review-card {
+                margin-left: -1rem;
+                margin-right: -1rem;
+                border-radius: 0;
+              }
+              .review-card .card-body {
+                padding: 1.25rem !important;
+              }
+            }
+          </style>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<script>
-  // Initialize tooltips
-  document.addEventListener('DOMContentLoaded', function() {
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-  });
-</script>
