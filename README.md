@@ -28,4 +28,4 @@ This is a full-stack MERN-style E-Commerce website built using:
 
 ## Deployment
 
-Live at: https://your-render-url.onrender.com
+Live at: https://e-commerce-9qou.onrender.com/
