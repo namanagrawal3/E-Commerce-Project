@@ -42,14 +42,15 @@
             </div>
 
             <div class="mb-3">
-                <label for="img" class="form-label"> Image URL: </label>
-                <input type="text" class="form-control" id="img" name="img" placeholder="Enter the image URL" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>  
-                <div class="invalid-feedback">
-                    Please enter the image url field.
-                </div> 
+                <label for="img" class="form-label"> Image: </label>
+
+                <!-- Optional Image URL -->
+                <input type="text" class="form-control mb-2" id="img" name="img" placeholder="Enter the image URL (Optional)">
+                <div class="text-center text-muted my-2"> OR </div>
+
+                <!-- File Upload for Cloudinary -->
+                <input type="file" class="form-control" name="uploadedImage">
+                <div class="form-text"> Upload image file (jpg/png/jpeg) </div>
             </div>
 
             <button type="submit" class="btn btn-success btn-sm"> Add Product </button>

@@ -22,8 +22,19 @@ const showNewProductForm = (req, res) => {
 
 const addNewProduct = async (req, res) => {
     try {
+        DEFAULT_IMAGE = '/images/unknown.avif';
         const { name, price, desc, img } = req.body;
-        await Product.create({ name, price: parseFloat(price), desc, img, author: req.user._id }); 
+        let imageUrl = img;
+
+        // if uploaded file exists, use its path from Cloudinary
+        if (req.file) 
+            imageUrl = req.file.path;       // cloudinary gives full URL
+
+        // if both are empty, use default
+        if (!imageUrl) 
+            imageUrl = DEFAULT_IMAGE;
+    
+        await Product.create({ name, price: parseFloat(price), desc, img: imageUrl, author: req.user._id }); 
         req.flash('success', 'Product added successfully!!');     // flash message to show success message  
         res.redirect('/products');  
     }
@@ -39,7 +50,7 @@ const showParticularProduct = async (req, res) => {
         const foundProduct = await Product.findById(ID).populate({path: 'reviews', populate: { path: 'author' }});
         
         // res.render('products/show', { foundProduct, success: req.flash('success') }); // sending flash-message without "locals"
-        res.render('products/show', { foundProduct }); 
+        res.render('products/show', { foundProduct, user: req.user }); 
     }
     catch(e) {
         res.status(500).render('error', { error: e.message });

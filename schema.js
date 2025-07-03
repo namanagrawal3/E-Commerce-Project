@@ -4,9 +4,9 @@ const Joi = require('joi');
 
 const productSchema = Joi.object({
     name: Joi.string().required(),
-    img: Joi.string().required(),
     price: Joi.number().required().min(0),  
     desc: Joi.string().required(),
+    img: Joi.string().allow('', null)       // Accept empty string or null
 });
 
 

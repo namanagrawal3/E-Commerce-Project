@@ -34,6 +34,10 @@ const loginUser = (req, res) => {
     res.redirect('/products');
 };
 
+const showUserProfile = (req, res) => {
+    res.render('profile', { user: req.user });
+};
+
 const logOutUser = (req, res, next) => {
     req.logout(function(err) {
         if (err) 
@@ -44,4 +48,4 @@ const logOutUser = (req, res, next) => {
 };
 
 
-module.exports = { showSignUpForm, registerUser, showLoginForm, loginUser, logOutUser };
+module.exports = { showSignUpForm, registerUser, showLoginForm, loginUser, showUserProfile, logOutUser };

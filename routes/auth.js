@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const passport = require('passport');
-const { showSignUpForm, registerUser, showLoginForm, loginUser, logOutUser } = require('../controllers/auth');
+const { showSignUpForm, registerUser, showLoginForm, loginUser, showUserProfile, logOutUser } = require('../controllers/auth');
+const { isLoggedIn } = require('../middleware');
 
 
 // to show the form of sign-up
@@ -26,6 +27,10 @@ router.post('/login',
     }),
     loginUser
 );
+
+
+// to show the profile of current logged-in user
+router.get('/user/profile', isLoggedIn, showUserProfile);
 
 
 // to logout the session

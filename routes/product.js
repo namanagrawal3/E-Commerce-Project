@@ -5,6 +5,10 @@ const Review = require('../models/Review');
 const { validateProduct, isLoggedIn, isSeller, isProductAuthor } = require('../middleware');  
 const { showAllProducts, showNewProductForm, addNewProduct, showParticularProduct, showEditProductForm, updateProduct, deleteProduct } = require('../controllers/product');
 
+const multer = require('multer');
+const { storage } = require('../utils/cloudinary'); 
+const upload = multer({storage});           // using cloudinary-storage
+
 
 // to show all the products in the DB
 router.get('/products', showAllProducts);
@@ -15,7 +19,7 @@ router.get('/products/new', isLoggedIn, isSeller, showNewProductForm);
 
 
 // to add a new product in the DB
-router.post('/products', validateProduct, isLoggedIn, isSeller, addNewProduct);
+router.post('/products', upload.single('uploadedImage'), validateProduct, isLoggedIn, isSeller, addNewProduct);
 
 
 // to show the details of a particular product
